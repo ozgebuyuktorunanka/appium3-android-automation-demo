@@ -1,11 +1,11 @@
 import { remote } from "webdriverio";
 import { AppiumUtils } from "./helpers/utils.js";
 import { TestDataGenerator } from "./helpers/dataGenerator.js";
-import { DeviceInfo} from "./helpers/device.js";
+import { DeviceInfo } from "./helpers/device.js";
 import { Logger } from "./helpers/logger.js";
 import { getCapabilities, getServerConfig } from "./config/capabilities.js";
 
-const logger = new Logger("info"); 
+const logger = new Logger("info");
 
 class IntegrationTestSuite {
   constructor() {
@@ -17,7 +17,7 @@ class IntegrationTestSuite {
 
   async setup() {
     try {
-      this.logger.info("Setting up integration test suite...");
+      logger.info("Setting up integration test suite...");
 
       // Get capabilities and server config
       const caps = getCapabilities("android");
@@ -33,16 +33,16 @@ class IntegrationTestSuite {
       this.utils = new AppiumUtils(this.driver);
       this.deviceInfo = new DeviceInfo(this.driver);
 
-      this.logger.info("Integration test suite setup completed");
+      logger.info("Integration test suite setup completed");
       return true;
     } catch (error) {
-      this.logger.error("Setup failed", { error: error.message });
+      logger.error("Setup failed", { error: error.message });
       return false;
     }
   }
 
   async runTest(testName, testFunction) {
-    this.logger.info(`Running test: ${testName}`);
+    logger.info(`Running test: ${testName}`);
     const startTime = Date.now();
 
     try {
@@ -55,7 +55,7 @@ class IntegrationTestSuite {
         timestamp: new Date().toISOString(),
       };
 
-      this.logger.info(`Test passed: ${testName} (${duration}ms)`);
+      logger.info(`Test passed: ${testName} (${duration}ms)`);
     } catch (error) {
       const duration = Date.now() - startTime;
 
@@ -66,7 +66,7 @@ class IntegrationTestSuite {
         timestamp: new Date().toISOString(),
       };
 
-      this.logger.error(`Test failed: ${testName} (${duration}ms)`, {
+      logger.error(`Test failed: ${testName} (${duration}ms)`, {
         error: error.message,
       });
 
@@ -87,7 +87,7 @@ class IntegrationTestSuite {
       throw new Error("Could not retrieve screen resolution");
     }
 
-    this.logger.info("Device connection test passed", deviceData);
+    logger.info("Device connection test passed", deviceData);
   }
 
   async basicUIInteractionTest() {
@@ -110,7 +110,7 @@ class IntegrationTestSuite {
     // Return to home
     await this.driver.pressKeyCode(3);
 
-    this.logger.info("Basic UI interaction test passed");
+    logger.info("Basic UI interaction test passed");
   }
 
   async appLaunchTest() {
@@ -121,12 +121,12 @@ class IntegrationTestSuite {
     ];
 
     for (const app of apps) {
-      this.logger.info(`Testing app launch: ${app.name}`);
+      logger.info(`Testing app launch: ${app.name}`);
 
       // Check if app is installed
       const isInstalled = await this.utils.isAppInstalled(app.package);
       if (!isInstalled) {
-        this.logger.warn(`App not installed: ${app.package}`);
+        logger.warn(`App not installed: ${app.package}`);
         continue;
       }
 
@@ -154,7 +154,7 @@ class IntegrationTestSuite {
       await this.driver.pause(1000);
     }
 
-    this.logger.info("App launch test passed");
+    logger.info("App launch test passed");
   }
 
   async textInputTest() {
@@ -195,12 +195,12 @@ class IntegrationTestSuite {
           throw new Error("Text input verification failed");
         }
 
-        this.logger.info(`Text input test passed with text: ${testText}`);
+        logger.info(`Text input test passed with text: ${testText}`);
       } else {
-        this.logger.warn("No text input field found for testing");
+        logger.warn("No text input field found for testing");
       }
     } catch (error) {
-      this.logger.error("Text input test setup failed", {
+      logger.error("Text input test setup failed", {
         error: error.message,
       });
     } finally {
@@ -240,7 +240,7 @@ class IntegrationTestSuite {
       throw new Error(`Failed to return to PORTRAIT orientation`);
     }
 
-    this.logger.info("Orientation test passed");
+    logger.info("Orientation test passed");
   }
 
   async networkConnectivityTest() {
@@ -251,7 +251,7 @@ class IntegrationTestSuite {
       throw new Error("Device not connected to network initially");
     }
 
-    this.logger.info("Initial network test passed");
+    logger.info("Initial network test passed");
 
     // Test WiFi toggle (may require root permissions)
     try {
@@ -259,13 +259,13 @@ class IntegrationTestSuite {
       await this.driver.pause(3000);
 
       const disconnectedInfo = await this.utils.getNetworkInfo();
-      this.logger.info("WiFi toggle test completed");
+      logger.info("WiFi toggle test completed");
 
       // Re-enable WiFi
       await this.utils.toggleWifi(true);
       await this.driver.pause(5000);
     } catch (wifiError) {
-      this.logger.warn(
+      logger.warn(
         "WiFi toggle test skipped (may require root):",
         wifiError.message
       );
@@ -286,7 +286,7 @@ class IntegrationTestSuite {
       throw new Error("Could not retrieve storage information");
     }
 
-    this.logger.info("Memory and storage test passed", {
+    logger.info("Memory and storage test passed", {
       resolution: deviceInfo.screenResolution,
       android: deviceInfo.androidVersion,
     });
@@ -302,12 +302,12 @@ class IntegrationTestSuite {
     for (let i = 0; i < testApps.length; i++) {
       const app = testApps[i];
 
-      this.logger.info(`Testing multi-app workflow: ${app.name}`);
+      logger.info(`Testing multi-app workflow: ${app.name}`);
 
       // Check if app exists
       const isInstalled = await this.utils.isAppInstalled(app.package);
       if (!isInstalled) {
-        this.logger.warn(`App not installed: ${app.package}`);
+        logger.warn(`App not installed: ${app.package}`);
         continue;
       }
 
@@ -339,12 +339,12 @@ class IntegrationTestSuite {
 
     // Return to home
     await this.driver.pressKeyCode(3);
-    this.logger.info("Multi-app workflow test passed");
+    logger.info("Multi-app workflow test passed");
   }
 
   async errorRecoveryTest() {
     // Test error handling and recovery mechanisms
-    this.logger.info("Testing error recovery mechanisms");
+    logger.info("Testing error recovery mechanisms");
 
     try {
       // Intentionally try to find non-existent element
@@ -361,10 +361,7 @@ class IntegrationTestSuite {
         throw expectedError;
       }
 
-      this.logger.info(
-        "Expected error caught successfully:",
-        expectedError.name
-      );
+      logger.info("Expected error caught successfully:", expectedError.name);
     }
 
     // Test recovery by taking screenshot and continuing
@@ -379,7 +376,7 @@ class IntegrationTestSuite {
       throw new Error("Device became unresponsive during error recovery");
     }
 
-    this.logger.info("Error recovery test passed");
+    logger.info("Error recovery test passed");
   }
 
   async generateTestReport() {
@@ -427,14 +424,14 @@ class IntegrationTestSuite {
       JSON.stringify(report, null, 2)
     );
 
-    this.logger.info("Test Report Generated", report.summary);
+    logger.info("Test Report Generated", report.summary);
     return report;
   }
 
   async cleanup() {
     // Clean up resources and return device to initial state
     try {
-      this.logger.info("Starting cleanup process...");
+      logger.info("Starting cleanup process...");
 
       // Close any open apps
       await this.driver.pressKeyCode(3); // Home
@@ -458,9 +455,9 @@ class IntegrationTestSuite {
       // Reset orientation to portrait
       await this.utils.rotateDevice("PORTRAIT");
 
-      this.logger.info("Cleanup completed successfully");
+      logger.info("Cleanup completed successfully");
     } catch (cleanupError) {
-      this.logger.error("Cleanup failed", { error: cleanupError.message });
+      logger.error("Cleanup failed", { error: cleanupError.message });
     }
   }
 
@@ -470,9 +467,9 @@ class IntegrationTestSuite {
       try {
         await this.cleanup();
         await this.driver.deleteSession();
-        this.logger.info("Driver session closed successfully");
+        logger.info("Driver session closed successfully");
       } catch (error) {
-        this.logger.error("Failed to close driver session", {
+        logger.error("Failed to close driver session", {
           error: error.message,
         });
       }
@@ -494,7 +491,7 @@ class IntegrationTestSuite {
     // Setup phase
     const setupSuccess = await testSuite.setup();
     if (!setupSuccess) {
-      console.error("❌ Setup failed - cannot continue with tests");
+      logger.error("❌ Setup failed - cannot continue with tests");
       process.exit(1);
     }
 
@@ -550,11 +547,11 @@ class IntegrationTestSuite {
     // Exit with appropriate code based on results
     process.exit(report.summary.failed > 0 ? 1 : 0);
   } catch (criticalError) {
-    console.error(
+    logger.error(
       "💥 Critical error in integration test suite:",
       criticalError.message
     );
-    console.error("🔍 Stack trace:", criticalError.stack);
+    logger.error("🔍 Stack trace:", criticalError.stack);
 
     // Still try to generate partial report
     if (
@@ -565,10 +562,7 @@ class IntegrationTestSuite {
         report = await testSuite.generateTestReport();
         logger.info("📊 Partial test report generated despite critical error");
       } catch (reportError) {
-        console.error(
-          "❌ Could not generate test report:",
-          reportError.message
-        );
+        logger.error("❌ Could not generate test report:", reportError.message);
       }
     }
 

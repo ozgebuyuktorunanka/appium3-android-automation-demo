@@ -1,5 +1,8 @@
-// Appium capabilities configurations for different scenarios
+import { Logger } from '../helpers/logger.js';
 
+const logger = new Logger("info");
+
+// Appium capabilities configurations for different scenarios
 export const capabilities = {
     // Standard Android Emulator
     android: {
@@ -260,22 +263,22 @@ export class CapabilityBuilder {
 
 // Example usage function
 export function createExampleCapabilities() {
-    console.log('=== Capability Examples ===\n');
+    logger.info('=== Capability Examples ===\n');
 
     // Basic Android
-    console.log('1. Basic Android Emulator:');
-    console.log(JSON.stringify(getCapabilities('android'), null, 2));
+    logger.info('1. Basic Android Emulator:');
+    logger.info(JSON.stringify(getCapabilities('android'), null, 2));
 
     // Real Device
-    console.log('\n2. Real Android Device:');
-    console.log(JSON.stringify(getCapabilities('androidReal'), null, 2));
+    logger.info('\n2. Real Android Device:');
+    logger.info(JSON.stringify(getCapabilities('androidReal'), null, 2));
 
     // Chrome Browser
-    console.log('\n3. Chrome Browser:');
-    console.log(JSON.stringify(getCapabilities('androidChrome'), null, 2));
+    logger.info('\n3. Chrome Browser:');
+    logger.info(JSON.stringify(getCapabilities('androidChrome'), null, 2));
 
     // Using Builder Pattern
-    console.log('\n4. Using Builder Pattern:');
+    logger.info('\n4. Using Builder Pattern:');
     const customCaps = new CapabilityBuilder()
         .setDevice('Pixel 7')
         .setPackage('com.example.app', '.MainActivity')
@@ -283,7 +286,6 @@ export function createExampleCapabilities() {
         .setNoReset(true)
         .setTimeout(180)
         .build();
-    console.log(JSON.stringify(customCaps, null, 2));
-
-    console.log('\n=========================');
+    logger.info(JSON.stringify(customCaps, null, 2));
+    logger.info('\n=========================');
 }
