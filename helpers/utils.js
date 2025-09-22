@@ -334,37 +334,3 @@ export class AppiumUtils {
         }
     }
 }
-
-// Test data generators
-export class TestDataGenerator {
-    static generateRandomEmail() {
-        const domains = ['gmail.com', 'yahoo.com', 'outlook.com', 'test.com'];
-        const randomString = Math.random().toString(36).substring(2, 8);
-        const domain = domains[Math.floor(Math.random() * domains.length)];
-        return `test_${randomString}@${domain}`;
-    }
-
-    static generateRandomPhoneNumber() {
-        const areaCode = Math.floor(Math.random() * 900) + 100;
-        const firstThree = Math.floor(Math.random() * 900) + 100;
-        const lastFour = Math.floor(Math.random() * 9000) + 1000;
-        return `${areaCode}-${firstThree}-${lastFour}`;
-    }
-
-    static generateRandomString(length = 8) {
-        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-        let result = '';
-        for (let i = 0; i < length; i++) {
-            result += chars.charAt(Math.floor(Math.random() * chars.length));
-        }
-        return result;
-    }
-
-    static generateRandomDate(startYear = 1990, endYear = 2023) {
-        const start = new Date(startYear, 0, 1);
-        const end = new Date(endYear, 11, 31);
-        const randomTime = start.getTime() + Math.random() * (end.getTime() - start.getTime());
-        return new Date(randomTime);
-    }
-}
-

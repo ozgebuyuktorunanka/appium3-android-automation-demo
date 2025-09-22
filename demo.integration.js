@@ -1,8 +1,6 @@
 import { remote } from "webdriverio";
-import {
-  AppiumUtils,
-  TestDataGenerator
-} from "./helpers/utils.js";
+import { AppiumUtils } from "./helpers/utils.js";
+import { TestDataGenerator } from "./helpers/dataGenerator.js";
 import { DeviceInfo} from "./helpers/device.js";
 import { Logger } from "./helpers/logger.js";
 import { getCapabilities, getServerConfig } from "./config/capabilities.js";
