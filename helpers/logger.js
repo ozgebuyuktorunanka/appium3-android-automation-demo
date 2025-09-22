@@ -1,4 +1,5 @@
 // Logging utilities
+// I added in here four different level log method.
 export class Logger {
     constructor(logLevel = 'info') {
         this.logLevel = logLevel;
