@@ -1,15 +1,16 @@
 import { remote } from "webdriverio";
 import {
   AppiumUtils,
-  DeviceInfo,
-  TestDataGenerator,
-  Logger,
+  TestDataGenerator
 } from "./helpers/utils.js";
+import { DeviceInfo} from "./helpers/device.js";
+import { Logger } from "./helpers/logger.js";
 import { getCapabilities, getServerConfig } from "./config/capabilities.js";
+
+const logger = new Logger("info"); 
 
 class IntegrationTestSuite {
   constructor() {
-    this.logger = new Logger("info");
     this.testResults = {};
     this.driver = null;
     this.utils = null;
@@ -487,8 +488,8 @@ class IntegrationTestSuite {
   let report = null;
 
   try {
-    console.log("🚀 Starting Appium 3 Integration Test Suite...");
-    console.log(
+    logger.info("🚀 Starting Appium 3 Integration Test Suite...");
+    logger.info(
       "📋 This comprehensive test covers all major Appium functionality"
     );
 
@@ -499,7 +500,7 @@ class IntegrationTestSuite {
       process.exit(1);
     }
 
-    console.log("✅ Setup completed - Running integration tests...\n");
+    logger.info("✅ Setup completed - Running integration tests...\n");
 
     // Execute all test scenarios
     await testSuite.runTest("Device Connection Test", () =>
@@ -534,15 +535,15 @@ class IntegrationTestSuite {
       testSuite.errorRecoveryTest()
     );
 
-    console.log("\n📊 Generating comprehensive test report...");
+    logger.info("\n📊 Generating comprehensive test report...");
     report = await testSuite.generateTestReport();
 
-    console.log("\n🎉 Integration test suite completed!");
-    console.log(
+    logger.info("\n🎉 Integration test suite completed!");
+    logger.info(
       `📈 Success Rate: ${report.summary.successRate}% (${report.summary.passed}/${report.summary.totalTests})`
     );
-    console.log(`⏱️  Total Execution Time: ${report.executionTime.total}ms`);
-    console.log(
+    logger.info(`⏱️  Total Execution Time: ${report.executionTime.total}ms`);
+    logger.info(
       `📄 Detailed report saved to: reports/integration-test-report-${
         new Date().toISOString().split("T")[0]
       }.json`
@@ -564,7 +565,7 @@ class IntegrationTestSuite {
     ) {
       try {
         report = await testSuite.generateTestReport();
-        console.log("📊 Partial test report generated despite critical error");
+        logger.info("📊 Partial test report generated despite critical error");
       } catch (reportError) {
         console.error(
           "❌ Could not generate test report:",

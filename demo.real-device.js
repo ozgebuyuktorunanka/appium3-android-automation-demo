@@ -1,4 +1,7 @@
 import { remote } from "webdriverio";
+import { Logger } from "./helpers/logger.js";
+
+const logger = new Logger("info");
 
 // Real device capabilities for Appium 3
 const caps = {
@@ -16,12 +19,12 @@ const caps = {
   let driver;
 
   try {
-    console.log("Connecting to real Android device...");
+    logger.info("Connecting to real Android device...");
 
     // Check if device is connected
     const { execSync } = await import("child_process");
     const devices = execSync("adb devices").toString();
-    console.log("Connected devices:", devices);
+    logger.info("Connected devices:", devices);
 
     if (!devices.includes("device")) {
       throw new Error(
@@ -37,16 +40,16 @@ const caps = {
       capabilities: caps,
     });
 
-    console.log("Successfully connected to real device");
+    logger.info("Successfully connected to real device");
 
     // Get device information
     const deviceInfo = await driver.execute("mobile: deviceInfo");
-    console.log("Device Info:", JSON.stringify(deviceInfo, null, 2));
+    logger.info("Device Info:", JSON.stringify(deviceInfo, null, 2));
 
     // Get battery information
     const batteryInfo = await driver.execute("mobile: batteryInfo");
-    console.log("Battery Level:", batteryInfo.level + "%");
-    console.log("Battery State:", batteryInfo.state);
+    logger.info("Battery Level:", batteryInfo.level + "%");
+    logger.info("Battery State:", batteryInfo.state);
 
     // Test device sensors if available
     try {
@@ -54,13 +57,13 @@ const caps = {
         command: "dumpsys",
         args: ["connectivity"],
       });
-      console.log("Network connectivity check completed");
+      logger.info("Network connectivity check completed");
     } catch (sensorError) {
-      console.log("Sensor check skipped:", sensorError.message);
+      logger.info("Sensor check skipped:", sensorError.message);
     }
 
     // Perform real device specific tests
-    console.log("Testing device-specific features...");
+    logger.info("Testing device-specific features...");
 
     // Test camera permission (if available)
     try {
@@ -70,9 +73,9 @@ const caps = {
       });
       await driver.pause(2000);
       await driver.pressKeyCode(4); // Back button
-      console.log("Camera app test completed");
+      logger.info("Camera app test completed");
     } catch (cameraError) {
-      console.log("Camera test skipped:", cameraError.message);
+      logger.info("Camera test skipped:", cameraError.message);
     }
 
     // Test notifications
@@ -81,9 +84,9 @@ const caps = {
       args: ["broadcast", "-a", "android.intent.action.CLOSE_SYSTEM_DIALOGS"],
     });
 
-    console.log("Real device demo completed successfully!");
+    logger.info("Real device demo completed successfully!");
   } catch (error) {
-    console.error("Real device demo error:", error.message);
+    logger.error("Real device demo error:", error.message);
   } finally {
     if (driver) {
       await driver.deleteSession();

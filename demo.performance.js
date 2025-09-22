@@ -1,5 +1,10 @@
 import { remote } from "webdriverio";
+import { Logger } from "./helpers/logger.js";
 
+//We can start in here Logger Class 
+const logger = new Logger("info");
+
+//Capabilities for Appium 3
 const caps = {
   platformName: "Android",
   "appium:automationName": "UiAutomator2",
@@ -15,7 +20,7 @@ class PerformanceMonitor {
   }
 
   async measureActionTime(actionName, actionFunction) {
-    console.log(`Measuring performance for: ${actionName}`);
+    logger.info(`Measuring performance for: ${actionName}`);
     const startTime = Date.now();
 
     try {
@@ -29,7 +34,7 @@ class PerformanceMonitor {
         timestamp: new Date().toISOString(),
       };
 
-      console.log(`${actionName} completed in ${duration}ms`);
+      logger.info(`${actionName} completed in ${duration}ms`);
       return duration;
     } catch (error) {
       const endTime = Date.now();
@@ -42,13 +47,13 @@ class PerformanceMonitor {
         timestamp: new Date().toISOString(),
       };
 
-      console.log(`${actionName} failed after ${duration}ms: ${error.message}`);
+      logger.info(`${actionName} failed after ${duration}ms: ${error.message}`);
       return duration;
     }
   }
 
   async getDevicePerformanceData() {
-    console.log("Collecting device performance data...");
+    logger.info("Collecting device performance data...");
 
     try {
       // CPU Usage
@@ -82,7 +87,7 @@ class PerformanceMonitor {
         storage: this.parseStorageInfo(storageInfo),
       };
     } catch (error) {
-      console.log("Performance data collection failed:", error.message);
+      logger.info("Performance data collection failed:", error.message);
       return null;
     }
   }
@@ -137,14 +142,14 @@ class PerformanceMonitor {
   }
 
   generatePerformanceReport() {
-    console.log("\n=== PERFORMANCE REPORT ===");
-    console.log("Action Performance Metrics:");
+    logger.info("\n=== PERFORMANCE REPORT ===");
+    logger.info("Action Performance Metrics:");
 
     for (const [action, data] of Object.entries(this.metrics)) {
       const status = data.success ? "✅" : "❌";
-      console.log(`${status} ${action}: ${data.duration}ms`);
+      logger.info(`${status} ${action}: ${data.duration}ms`);
       if (!data.success) {
-        console.log(`   Error: ${data.error}`);
+        logger.info(`   Error: ${data.error}`);
       }
     }
 
@@ -160,18 +165,18 @@ class PerformanceMonitor {
       const minDuration = Math.min(...durations);
       const maxDuration = Math.max(...durations);
 
-      console.log("\nStatistics:");
-      console.log(`Average action time: ${avgDuration}ms`);
-      console.log(`Fastest action: ${minDuration}ms`);
-      console.log(`Slowest action: ${maxDuration}ms`);
-      console.log(
+      logger.info("\nStatistics:");
+      logger.info(`Average action time: ${avgDuration}ms`);
+      logger.info(`Fastest action: ${minDuration}ms`);
+      logger.info(`Slowest action: ${maxDuration}ms`);
+      logger.info(
         `Success rate: ${Math.round(
           (successfulActions.length / Object.keys(this.metrics).length) * 100
         )}%`
       );
     }
 
-    console.log("========================\n");
+    logger.info("========================\n");
     return this.metrics;
   }
 }
@@ -180,7 +185,7 @@ class PerformanceMonitor {
   let driver;
 
   try {
-    console.log("Starting performance monitoring demo...");
+    logger.info("Starting performance monitoring demo...");
 
     driver = await remote({
       hostname: "localhost",
@@ -192,12 +197,12 @@ class PerformanceMonitor {
 
     const performanceMonitor = new PerformanceMonitor(driver);
 
-    console.log("Connected successfully - Starting performance tests...");
+    logger.info("Connected successfully - Starting performance tests...");
 
     // Get initial device performance data
     const initialPerf = await performanceMonitor.getDevicePerformanceData();
     if (initialPerf) {
-      console.log(
+      logger.info(
         "Initial device performance:",
         JSON.stringify(initialPerf, null, 2)
       );
@@ -303,13 +308,12 @@ class PerformanceMonitor {
     // Get final device performance data
     const finalPerf = await performanceMonitor.getDevicePerformanceData();
     if (finalPerf && initialPerf) {
-      console.log("Performance comparison:");
+      logger.info("Performance comparison:");
       if (initialPerf.memory && finalPerf.memory) {
         const memoryChange =
           finalPerf.memory.usedKB - initialPerf.memory.usedKB;
-        console.log(
-          `Memory usage change: ${
-            memoryChange > 0 ? "+" : ""
+        logger.info(
+          `Memory usage change: ${memoryChange > 0 ? "+" : ""
           }${memoryChange} KB`
         );
       }
@@ -333,10 +337,10 @@ class PerformanceMonitor {
       )
     );
 
-    console.log("Performance report saved to performance-report.json");
-    console.log("Performance monitoring demo completed!");
+    logger.info("Performance report saved to performance-report.json");
+    logger.info("Performance monitoring demo completed!");
   } catch (error) {
-    console.error("Performance demo error:", error.message);
+    logger.error("Performance demo error:", error.message);
   } finally {
     if (driver) {
       await driver.deleteSession();

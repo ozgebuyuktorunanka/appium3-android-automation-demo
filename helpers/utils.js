@@ -1,4 +1,3 @@
-// Utility functions for Appium automation
 
 export class AppiumUtils {
     constructor(driver) {
@@ -336,49 +335,6 @@ export class AppiumUtils {
     }
 }
 
-// Device information utilities
-export class DeviceInfo {
-    constructor(driver) {
-        this.driver = driver;
-        this.utils = new AppiumUtils(driver);
-    }
-
-    async getCompleteDeviceInfo() {
-        console.log('Gathering complete device information...');
-
-        const deviceInfo = {};
-
-        try {
-            // Basic device info
-            deviceInfo.androidVersion = await this.utils.executeShell('getprop', ['ro.build.version.release']);
-            deviceInfo.deviceModel = await this.utils.executeShell('getprop', ['ro.product.model']);
-            deviceInfo.manufacturer = await this.utils.executeShell('getprop', ['ro.product.manufacturer']);
-            deviceInfo.brand = await this.utils.executeShell('getprop', ['ro.product.brand']);
-            deviceInfo.buildVersion = await this.utils.executeShell('getprop', ['ro.build.version.incremental']);
-
-            // Screen info
-            const windowSize = await this.driver.getWindowSize();
-            deviceInfo.screenResolution = `${windowSize.width}x${windowSize.height}`;
-            deviceInfo.orientation = await this.utils.getOrientation();
-
-            // System info
-            deviceInfo.apiLevel = await this.utils.executeShell('getprop', ['ro.build.version.sdk']);
-            deviceInfo.kernelVersion = await this.utils.executeShell('uname', ['-r']);
-
-            // Network info
-            const networkInfo = await this.utils.getNetworkInfo();
-            deviceInfo.networkConnected = networkInfo.connected;
-
-            console.log('Device info collected:', JSON.stringify(deviceInfo, null, 2));
-            return deviceInfo;
-
-        } catch (error) {
-            console.log(`Device info collection failed: ${error.message}`);
-            return deviceInfo;
-        }
-    }
-}
-
 // Test data generators
 export class TestDataGenerator {
     static generateRandomEmail() {
@@ -412,38 +368,3 @@ export class TestDataGenerator {
     }
 }
 
-// Logging utilities
-export class Logger {
-    constructor(logLevel = 'info') {
-        this.logLevel = logLevel;
-        this.levels = { error: 0, warn: 1, info: 2, debug: 3 };
-    }
-
-    log(level, message, data = null) {
-        if (this.levels[level] <= this.levels[this.logLevel]) {
-            const timestamp = new Date().toISOString();
-            const logMessage = `[${timestamp}] [${level.toUpperCase()}] ${message}`;
-
-            console.log(logMessage);
-            if (data) {
-                console.log(JSON.stringify(data, null, 2));
-            }
-        }
-    }
-
-    error(message, data = null) {
-        this.log('error', message, data);
-    }
-
-    warn(message, data = null) {
-        this.log('warn', message, data);
-    }
-
-    info(message, data = null) {
-        this.log('info', message, data);
-    }
-
-    debug(message, data = null) {
-        this.log('debug', message, data);
-    }
-}

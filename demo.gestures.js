@@ -1,5 +1,10 @@
 import { remote } from "webdriverio";
+import { Logger } from "./helpers/logger.js";
 
+//We can initiliaze the logger class.
+const logger = new Logger("info");
+
+//Capabilities for Appium 3
 const caps = {
   platformName: "Android",
   "appium:automationName": "UiAutomator2",
@@ -14,7 +19,7 @@ class GestureDemo {
   }
 
   async swipeUp() {
-    console.log("Performing swipe up gesture...");
+    logger.info("Performing swipe up gesture...");
     const { width, height } = await this.driver.getWindowSize();
 
     await this.driver.touchPerform([
@@ -27,7 +32,7 @@ class GestureDemo {
   }
 
   async swipeDown() {
-    console.log("Performing swipe down gesture...");
+    logger.info("Performing swipe down gesture...");
     const { width, height } = await this.driver.getWindowSize();
 
     await this.driver.touchPerform([
@@ -40,7 +45,7 @@ class GestureDemo {
   }
 
   async swipeLeft() {
-    console.log("Performing swipe left gesture...");
+    logger.info("Performing swipe left gesture...");
     const { width, height } = await this.driver.getWindowSize();
 
     await this.driver.touchPerform([
@@ -53,7 +58,7 @@ class GestureDemo {
   }
 
   async swipeRight() {
-    console.log("Performing swipe right gesture...");
+    logger.info("Performing swipe right gesture...");
     const { width, height } = await this.driver.getWindowSize();
 
     await this.driver.touchPerform([
@@ -66,7 +71,7 @@ class GestureDemo {
   }
 
   async pinchZoom() {
-    console.log("Performing pinch zoom out gesture...");
+    logger.info("Performing pinch zoom out gesture...");
     const { width, height } = await this.driver.getWindowSize();
     const centerX = width / 2;
     const centerY = height / 2;
@@ -87,7 +92,7 @@ class GestureDemo {
   }
 
   async longPress() {
-    console.log("Performing long press gesture...");
+    logger.info("Performing long press gesture...");
     const { width, height } = await this.driver.getWindowSize();
 
     await this.driver.touchPerform([
@@ -99,7 +104,7 @@ class GestureDemo {
   }
 
   async doubleTap() {
-    console.log("Performing double tap gesture...");
+    logger.info("Performing double tap gesture...");
     const { width, height } = await this.driver.getWindowSize();
     const centerX = width / 2;
     const centerY = height / 2;
@@ -119,7 +124,7 @@ class GestureDemo {
   }
 
   async scrollToElement() {
-    console.log("Demonstrating scroll to find element...");
+    logger.info("Demonstrating scroll to find element...");
 
     try {
       // Try to find Settings app by scrolling
@@ -133,7 +138,7 @@ class GestureDemo {
             '//android.widget.TextView[@text="Settings"]'
           );
           if (await settingsApp.isDisplayed()) {
-            console.log("Found Settings app!");
+            logger.info("Found Settings app!");
             await settingsApp.click();
             found = true;
 
@@ -148,10 +153,10 @@ class GestureDemo {
       }
 
       if (!found) {
-        console.log("Settings app not found after scrolling");
+        logger.info("Settings app not found after scrolling");
       }
     } catch (error) {
-      console.log("Scroll to element demo failed:", error.message);
+      logger.info("Scroll to element demo failed:", error.message);
     }
   }
 }
@@ -160,7 +165,7 @@ class GestureDemo {
   let driver;
 
   try {
-    console.log("Starting gesture automation demo...");
+    logger.info("Starting gesture automation demo...");
 
     driver = await remote({
       hostname: "localhost",
@@ -170,7 +175,7 @@ class GestureDemo {
       capabilities: caps,
     });
 
-    console.log("Connected successfully");
+    logger.info("Connected successfully");
 
     const gestureDemo = new GestureDemo(driver);
 
@@ -185,7 +190,7 @@ class GestureDemo {
     await gestureDemo.swipeRight();
 
     // Open app drawer for gesture testing
-    console.log("Opening app drawer...");
+    logger.info("Opening app drawer...");
     const { width, height } = await driver.getWindowSize();
     await driver.touchPerform([
       { action: "press", options: { x: width / 2, y: height - 100 } },
@@ -205,9 +210,9 @@ class GestureDemo {
     // Return to home
     await driver.pressKeyCode(3);
 
-    console.log("Gesture demo completed successfully!");
+    logger.info("Gesture demo completed successfully!");
   } catch (error) {
-    console.error("Gesture demo error:", error.message);
+    logger.error("Gesture demo error:", error.message);
   } finally {
     if (driver) {
       await driver.deleteSession();

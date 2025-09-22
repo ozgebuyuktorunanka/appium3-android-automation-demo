@@ -1,7 +1,8 @@
 import { remote } from 'webdriverio';
 import fetch from 'node-fetch';
+import { Logger } from "./helpers/logger.js";
 
-// Android capabilities configuration for Appium 3
+//Android capabilities configuration for Appium 3
 const caps = {
     platformName: 'Android',
     'appium:automationName': 'UiAutomator2',
@@ -13,14 +14,15 @@ const caps = {
     // For testing with browser
     'appium:browserName': 'Chrome'
 };
-
 const SERVER = 'http://localhost:4723';
 
 (async () => {
     let driver;
+    //initialize the logger class in here.
+    const logger = new Logger(logLevel);
 
     try {
-        console.log('🚀 Starting Appium 3 Android demo...');
+        logger.info('🚀 Starting Appium 3 Android demo...');
 
         // Initialize WebDriver connection to Appium server
         driver = await remote({
@@ -30,38 +32,37 @@ const SERVER = 'http://localhost:4723';
             logLevel: 'info',
             capabilities: caps
         });
-
-        console.log('✅ Successfully connected to Appium server');
+        logger.info('✅ Successfully connected to Appium server');
 
         // Get Android version information
         const androidVersion = await driver.execute('mobile: shell', {
             command: 'getprop',
             args: ['ro.build.version.release']
         });
-        console.log('📱 Android Version =>', androidVersion?.trim());
+        logger.info('📱 Android Version =>', androidVersion?.trim());
 
         // Get device model information
         const deviceModel = await driver.execute('mobile: shell', {
             command: 'getprop',
             args: ['ro.product.model']
         });
-        console.log('📱 Device Model =>', deviceModel?.trim());
+        logger.info('📱 Device Model =>', deviceModel?.trim());
 
         // Get screen resolution
         const screenSize = await driver.execute('mobile: shell', {
             command: 'wm',
             args: ['size']
         });
-        console.log('📺 Screen Resolution =>', screenSize?.trim());
+        logger.info('📺 Screen Resolution =>', screenSize?.trim());
 
         // Wait a moment before starting interactions
         await driver.pause(2000);
 
         // Basic UI interaction examples
-        console.log('🔧 Performing basic UI interactions...');
+        logger.info('🔧 Performing basic UI interactions...');
 
         // Press RECENTS button (Key Event 187)
-        console.log('📱 Pressing RECENTS button...');
+        logger.info('📱 Pressing RECENTS button...');
         await driver.execute('mobile: shell', {
             command: 'input',
             args: ['keyevent', '187']
@@ -70,7 +71,7 @@ const SERVER = 'http://localhost:4723';
         await driver.pause(2000);
 
         // Press HOME button (Key Event 3)
-        console.log('🏠 Pressing HOME button...');
+        logger.info('🏠 Pressing HOME button...');
         await driver.execute('mobile: shell', {
             command: 'input',
             args: ['keyevent', '3']
@@ -79,7 +80,7 @@ const SERVER = 'http://localhost:4723';
         await driver.pause(2000);
 
         // Open notification panel by swiping down from top
-        console.log('📥 Opening notification panel...');
+        logger.info('📥 Opening notification panel...');
         const { width, height } = await driver.getWindowSize();
         await driver.touchPerform([
             { action: 'press', options: { x: width / 2, y: 10 } },
@@ -90,7 +91,7 @@ const SERVER = 'http://localhost:4723';
         await driver.pause(2000);
 
         // Close notification panel
-        console.log('📤 Closing notification panel...');
+        logger.info('📤 Closing notification panel...');
         await driver.execute('mobile: shell', {
             command: 'input',
             args: ['keyevent', '4'] // Back button
@@ -99,25 +100,25 @@ const SERVER = 'http://localhost:4723';
         await driver.pause(1000);
 
         // Take a screenshot
-        console.log('📸 Taking screenshot...');
+        logger.info('📸 Taking screenshot...');
         const screenshot = await driver.takeScreenshot();
-        console.log('Screenshot taken (base64 length):', screenshot.length);
+        logger.info('Screenshot taken (base64 length):', screenshot.length);
 
         // Get current activity
         const currentActivity = await driver.getCurrentActivity();
-        console.log('📱 Current Activity:', currentActivity);
+        logger.info('📱 Current Activity:', currentActivity);
 
         // Get installed packages (first 5)
-        console.log('📦 Getting installed packages...');
+        logger.info('📦 Getting installed packages...');
         const packages = await driver.execute('mobile: shell', {
             command: 'pm',
             args: ['list', 'packages', '-3'] // -3 for third party apps only
         });
         const packageList = packages.split('\n').slice(0, 5);
-        console.log('📦 First 5 installed packages:', packageList);
+        logger.info('📦 First 5 installed packages:', packageList);
 
         // Example of opening an app (Calculator)
-        console.log('🧮 Trying to open Calculator app...');
+        logger.info('🧮 Trying to open Calculator app...');
         try {
             await driver.execute('mobile: shell', {
                 command: 'am',
@@ -126,14 +127,14 @@ const SERVER = 'http://localhost:4723';
             await driver.pause(3000);
 
             // If calculator opened, try some basic interactions
-            console.log('🔢 Performing calculator operations...');
+            logger.info('🔢 Performing calculator operations...');
 
             // Try to find and tap number buttons (using UiAutomator2 selectors)
             try {
                 const button2 = await driver.$('//android.widget.Button[@text="2"]');
                 if (await button2.isExisting()) {
                     await button2.click();
-                    console.log('✅ Clicked number 2');
+                    logger.info('✅ Clicked number 2');
                 }
 
                 await driver.pause(500);
@@ -141,7 +142,7 @@ const SERVER = 'http://localhost:4723';
                 const buttonPlus = await driver.$('//android.widget.Button[@text="+"]');
                 if (await buttonPlus.isExisting()) {
                     await buttonPlus.click();
-                    console.log('✅ Clicked plus button');
+                    logger.info('✅ Clicked plus button');
                 }
 
                 await driver.pause(500);
@@ -149,7 +150,7 @@ const SERVER = 'http://localhost:4723';
                 const button3 = await driver.$('//android.widget.Button[@text="3"]');
                 if (await button3.isExisting()) {
                     await button3.click();
-                    console.log('✅ Clicked number 3');
+                    logger.info('✅ Clicked number 3');
                 }
 
                 await driver.pause(500);
@@ -157,37 +158,37 @@ const SERVER = 'http://localhost:4723';
                 const buttonEquals = await driver.$('//android.widget.Button[@text="="]');
                 if (await buttonEquals.isExisting()) {
                     await buttonEquals.click();
-                    console.log('✅ Clicked equals button');
+                    logger.info('✅ Clicked equals button');
                 }
 
             } catch (calcError) {
-                console.log('⚠️ Calculator interaction failed:', calcError.message);
+                logger.info('⚠️ Calculator interaction failed:', calcError.message);
             }
 
         } catch (appError) {
-            console.log('⚠️ Could not open Calculator app:', appError.message);
+            logger.info('⚠️ Could not open Calculator app:', appError.message);
         }
 
         await driver.pause(2000);
 
         // Return to home
-        console.log('🏠 Returning to home screen...');
+        logger.info('🏠 Returning to home screen...');
         await driver.execute('mobile: shell', {
             command: 'input',
             args: ['keyevent', '3']
         });
 
-        console.log('✅ Demo completed successfully!');
+        logger.info('✅ Demo completed successfully!');
 
     } catch (error) {
-        console.error('❌ Error during demo execution:', error.message);
-        console.error('Stack trace:', error.stack);
+        logger.error('❌ Error during demo execution:', error.message);
+        logger.error('Stack trace:', error.stack);
     } finally {
         // Always quit the driver session
         if (driver) {
-            console.log('🛑 Closing driver session...');
+            logger.info('🛑 Closing driver session...');
             await driver.deleteSession();
-            console.log('✅ Driver session closed');
+            logger.info('✅ Driver session closed');
         }
     }
 })();
