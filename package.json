@@ -1,0 +1,27 @@
+{
+  "name": "appium3-android-demo",
+  "version": "1.0.0",
+  "description": "Appium 3 Android automation demo",
+  "main": "demo.android.js",
+  "type": "module",
+  "scripts": {
+    "start": "node demo.android.js",
+    "test": "node demo.android.js"
+  },
+  "dependencies": {
+    "node-fetch": "^3.3.2",
+    "webdriverio": "^8.46.0"
+  },
+  "devDependencies": {
+    "appium": "^2.2.1",
+    "appium-uiautomator2-driver": "^2.34.1"
+  },
+  "keywords": [
+    "appium",
+    "android",
+    "automation",
+    "testing"
+  ],
+  "author": "Your Name",
+  "license": "ISC"
+}
