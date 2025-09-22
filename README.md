@@ -1,254 +1,183 @@
-# Appium 3 Android Automation Demo
+# Appium 3 Android Automation Demo Collection
 
-A comprehensive demo project showcasing Android mobile automation using Appium 3 with WebDriverIO. This project demonstrates basic device interactions, UI automation, and app testing capabilities on Android devices and emulators.
+Complete Android mobile automation examples using Appium 3 and WebDriverIO. Choose the right demo for your testing needs.
 
-## Prerequisites
+## Quick Start
 
-Before starting with this project, ensure you have the following installed on your system:
+1. Install Node.js 16+ and Android Studio
+2. Set up environment variables for Android SDK
+3. Install Appium: `npm install -g appium`
+4. Install UiAutomator2 driver: `appium driver install uiautomator2`
+5. Clone repository and run `npm install`
+6. Start emulator and run `appium` in separate terminal
+7. Choose and run appropriate demo script
 
-- Node.js (version 16 or higher)
-- npm or yarn package manager
-- Android Studio (latest version)
-- Java Development Kit (JDK 8 or higher)
-- Git
+## Environment Variables Setup
 
-## Environment Setup
-
-### 1. Install Android Studio and SDK
-
-Download and install Android Studio from the official website. During installation, make sure to include the Android SDK, Android SDK Platform-Tools, and Android Virtual Device.
-
-### 2. Configure Environment Variables
-
-Add the following environment variables to your shell configuration file (.bashrc, .zshrc, or equivalent):
+Add to your shell config file (.zshrc or .bash_profile):
 
 ```bash
 export ANDROID_HOME=$HOME/Library/Android/sdk
-export ANDROID_SDK_ROOT=$ANDROID_HOME
-export PATH=$PATH:$ANDROID_HOME/emulator
-export PATH=$PATH:$ANDROID_HOME/platform-tools
-export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/emulator:$ANDROID_HOME/platform-tools
 export JAVA_HOME="/Applications/Android Studio.app/Contents/jbr/Contents/Home"
 ```
 
-For Apple Silicon Macs (M1, M2, M3, M4), also add:
+For Apple Silicon Macs, also add:
 ```bash
 export ANDROID_EMULATOR_USE_SYSTEM_LIBS=1
 ```
 
-Reload your shell configuration:
-```bash
-source ~/.zshrc
+## Demo Scripts Overview
+
+### demo.android.js - Basic Device Automation
+**Use when**: Learning Appium basics or testing emulator setup
+- Device information collection
+- Basic UI interactions (home, back, recents buttons)
+- Screenshot capture
+- Simple app launching (Calculator)
+- System command execution
+
+### demo.real-device.js - Physical Device Testing
+**Use when**: Testing with USB-connected Android phone/tablet
+- Real device detection and connection
+- Battery status monitoring
+- Device-specific sensor testing
+- Hardware feature validation
+- Performance on actual hardware
+
+### demo.app-testing.js - Web Browser Automation
+**Use when**: Testing mobile web applications
+- Chrome browser automation
+- Mobile responsive testing
+- Web page navigation
+- Touch interactions on web elements
+- Mobile viewport testing
+
+### demo.gestures.js - Advanced Touch Interactions
+**Use when**: Testing complex gesture-based apps
+- Swipe gestures (up, down, left, right)
+- Pinch zoom and multi-touch
+- Long press and double tap
+- Scroll to find elements
+- Complex gesture combinations
+
+### demo.performance.js - Performance Monitoring
+**Use when**: Measuring app performance and device resource usage
+- Action execution timing
+- Memory and CPU monitoring
+- Battery usage tracking
+- Performance metrics collection
+- Automated performance reporting
+
+### demo.integration.js - Complete Test Suite
+**Use when**: Running comprehensive validation tests
+- Multiple test scenarios
+- Error handling and recovery
+- Screenshot capture on failures
+- Test result reporting
+- Full device capability testing
+
+## Which Demo Should You Run?
+
+```
+Start Here
+    |
+    v
+Do you have a physical Android device connected?
+    |
+    |-- YES --> demo.real-device.js
+    |
+    |-- NO --> Are you testing a web application?
+               |
+               |-- YES --> demo.app-testing.js
+               |
+               |-- NO --> Do you need gesture testing?
+                          |
+                          |-- YES --> demo.gestures.js
+                          |
+                          |-- NO --> Do you need performance metrics?
+                                     |
+                                     |-- YES --> demo.performance.js
+                                     |
+                                     |-- NO --> Are you new to Appium?
+                                                |
+                                                |-- YES --> demo.android.js
+                                                |
+                                                |-- NO --> demo.integration.js
 ```
 
-### 3. Create Android Virtual Device
+## Running Scripts
 
-Open Android Studio and navigate to Tools > AVD Manager. Create a new virtual device with the following specifications:
-
-- Device: Pixel 7 or similar
-- System Image: Android 13 (API 33) or Android 14 (API 34)
-- Architecture: arm64-v8a (for Apple Silicon) or x86_64 (for Intel)
-
-### 4. Install Appium
-
-Install Appium globally using npm:
-
+Basic usage:
 ```bash
-npm install -g appium
-```
-
-Install the UiAutomator2 driver:
-
-```bash
-appium driver install uiautomator2
-```
-
-Verify the installation:
-
-```bash
-appium doctor --android
-```
-
-## Project Setup
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/your-username/appium3-android-demo.git
-cd appium3-android-demo
-```
-
-### 2. Install Dependencies
-
-```bash
-npm install
-```
-
-### 3. Verify Installation
-
-Check if all required tools are properly installed:
-
-```bash
-adb version
-emulator -help
-appium --version
-```
-
-## Running the Demo
-
-### 1. Start Android Emulator
-
-Launch your Android emulator:
-
-```bash
-emulator -avd your_emulator_name
-```
-
-Alternatively, start the emulator from Android Studio's AVD Manager.
-
-### 2. Verify Device Connection
-
-Ensure your emulator is detected:
-
-```bash
-adb devices
-```
-
-You should see your emulator listed with its ID.
-
-### 3. Start Appium Server
-
-In a separate terminal window, start the Appium server:
-
-```bash
+# Start Appium server (in one terminal)
 appium
-```
 
-The server will start on http://localhost:4723 by default.
-
-### 4. Run the Demo Script
-
-Execute the automation demo:
-
-```bash
-npm start
-```
-
-or
-
-```bash
+# Run chosen demo (in another terminal)
 node demo.android.js
+node demo.real-device.js
+node demo.app-testing.js
+node demo.gestures.js
+node demo.performance.js
+node demo.integration.js
 ```
 
-## What the Demo Does
+## Helper Files
 
-The demo script performs the following automated actions:
+### helpers/utils.js
+Utility functions for common automation tasks:
+- Element finding with timeout
+- Safe clicking and text input
+- Screenshot capture with timestamps
+- Device information collection
+- App management (install, launch, close)
 
-1. **Device Information Retrieval**
-   - Gets Android version
-   - Retrieves device model
-   - Checks screen resolution
-
-2. **Basic UI Interactions**
-   - Presses hardware buttons (Home, Recent apps, Back)
-   - Opens and closes notification panel
-   - Performs swipe gestures
-
-3. **Screenshot Capture**
-   - Takes device screenshots
-   - Logs screenshot information
-
-4. **App Automation**
-   - Launches Calculator app
-   - Performs basic calculations
-   - Demonstrates element finding and interaction
-
-5. **System Information**
-   - Lists installed packages
-   - Gets current activity information
+### config/capabilities.js
+Pre-configured capability sets for different scenarios:
+- Standard emulator testing
+- Real device testing
+- Browser automation
+- Performance testing
+- CI/CD environments
 
 ## Project Structure
 
 ```
 appium3-android-demo/
-├── demo.android.js          # Main demo script
-├── package.json            # Project dependencies and scripts
-├── README.md              # Project documentation
-└── screenshots/           # Generated screenshots (created during execution)
+├── demo.android.js           # Basic automation
+├── demo.real-device.js       # Physical device testing
+├── demo.app-testing.js       # Browser automation
+├── demo.gestures.js          # Gesture interactions
+├── demo.performance.js       # Performance monitoring
+├── demo.integration.js       # Complete test suite
+├── helpers/
+│   └── utils.js             # Utility functions
+├── config/
+│   └── capabilities.js      # Capability configurations
+└── screenshots/             # Generated screenshots
 ```
 
-## Configuration Options
+## Common Issues
 
-You can modify the capabilities in demo.android.js to suit your testing needs:
+**Device not detected**: Run `adb devices` to verify connection
+**Appium connection failed**: Ensure server is running on port 4723
+**Element not found**: UI elements vary between Android versions
+**Slow performance on Mac**: Use ARM64 system images for Apple Silicon
 
-```javascript
-const caps = {
-    platformName: 'Android',
-    'appium:automationName': 'UiAutomator2',
-    'appium:deviceName': 'Android Emulator',
-    'appium:NewCommandTimeout': 120,
-    'appium:autoGrantPermissions': true,
-    // Add more capabilities as needed
-};
-```
+## Requirements
 
-## Troubleshooting
+- Node.js 16+
+- Android Studio with SDK
+- Android emulator or physical device
+- Appium 3.x
+- USB debugging enabled (for real devices)
 
-### Common Issues and Solutions
+## Next Steps After Running Demos
 
-**Emulator not detected**
-- Ensure the emulator is fully booted before running the script
-- Check if adb can see the device with `adb devices`
+1. Modify capability configurations in config/capabilities.js
+2. Add your own test scenarios using helper functions
+3. Integrate with testing frameworks like Mocha or Jest
+4. Set up CI/CD pipeline with headless execution
+5. Explore advanced Appium features and gestures
 
-**Appium server connection failed**
-- Verify Appium server is running on port 4723
-- Check firewall settings if using remote devices
-
-**Element not found errors**
-- UI elements may vary between Android versions
-- Check if the app is properly installed and launched
-- Verify element selectors are correct
-
-**Performance issues on Apple Silicon**
-- Use ARM64 system images instead of x86
-- Enable hardware acceleration in AVD settings
-- Allocate sufficient RAM to the emulator
-
-### Getting Help
-
-If you encounter issues:
-
-1. Check the Appium logs for detailed error messages
-2. Verify your environment setup with `appium doctor`
-3. Ensure all dependencies are properly installed
-4. Review the Android emulator logs
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
-
-### Development Guidelines
-
-1. Follow existing code style and conventions
-2. Add appropriate comments for complex operations
-3. Test your changes on different Android versions
-4. Update documentation for new features
-
-## License
-
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-## Resources
-
-- [Appium Documentation](http://appium.io/docs/en/about-appium/intro/)
-- [WebDriverIO Documentation](https://webdriver.io/)
-- [Android Developer Documentation](https://developer.android.com/)
-- [UiAutomator2 Driver](https://github.com/appium/appium-uiautomator2-driver)
-
-## Acknowledgments
-
-This project demonstrates the capabilities of Appium 3 for Android automation testing. Special thanks to the Appium community for their continuous development and support.
-
----
-
-For questions or support, please open an issue in the repository or contact the maintainers.
+This collection provides practical examples for different Android automation scenarios. Start with demo.android.js if you're new to Appium, then progress to more specific demos based on your testing needs.
